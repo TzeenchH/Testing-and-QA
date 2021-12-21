@@ -1,6 +1,3 @@
-import _pytest
-from allpairspy import AllPairs
-
 import main
 import pytest
 
@@ -10,29 +7,38 @@ def test_all_is_ok():
     assert 20000 == result
 
 
-def test_incorrect_value_value_error():
-    with pytest.raises(ValueError):
-        main.calc_bonus(70000, 10, 4)
+@pytest.mark.parametrize(
+    "salary, level, perf_level, expected_msg",
+    [
+        (69999, 10, 4, "Зарплата не соответствует диапазону"),
+        (750001, 10, 4, "Зарплата не соответствует диапазону"),
+        (85000, 6, 4, "Недопустимый уровень инженера"),
+        (85000, 16, 4, "Недопустимый уровень инженера"),
+        (85000, 10, 0, "Неверное значение Performance Review"),
+        (85000, 10, 6, "Неверное значение Performance Review"),
+    ]
+)
+def test_incorrect_value_value_error(salary, level, perf_level, expected_msg):
+    with pytest.raises(ValueError, match=expected_msg):
+        main.calc_bonus(salary, level, perf_level)
 
 
 def test_incorrect_type_type_error():
-    with pytest.raises(TypeError):
+    with pytest.raises(TypeError, match="Введены данные некорректного формата"):
         main.calc_bonus("adad", 10, 5)
 
 
-null_exception_test_preset = [
-    dict(salary=None, level=10, perf_level=4),
-    dict(salary=75000, level=None, perf_level=4),
-    dict(salary=75000, level=10, perf_level=None)
-]
-
-
-@pytest.mark.parametrize("preset", null_exception_test_preset)
-def test_null_argument_null_argument_exception(preset):
-    with pytest.raises(main.NullAgrumentException):
-        main.calc_bonus(salary=preset.get("salary"),
-                        level=preset.get("level"),
-                        perf_level=preset.get("perf_level"))
+@pytest.mark.parametrize(
+    "salary, level, perf_level",
+    [
+        (None, 10, 4),
+        (75000, None, 4),
+        (75000, 10, None),
+    ]
+)
+def test_null_argument_null_argument_exception(salary, level, perf_level):
+    with pytest.raises(main.NullAgrumentException, match="Один из входных параметров не определён"):
+        main.calc_bonus(salary=salary, level=level, perf_level=perf_level)
 
 
 """Граничные значения зарплаты"""

@@ -34,7 +34,6 @@ def calc_level_modifier(level: int) -> decimal:
 
 
 def calc_performance_modifier(perf_level: int):
-    perf_bonus = 0
     if 2 <= perf_level < 2.5:
         perf_bonus = 0.25
     elif 2.5 <= perf_level < 3:
@@ -49,16 +48,16 @@ def calc_performance_modifier(perf_level: int):
 
 
 def calc_bonus(salary: int, level: int, perf_level: decimal) -> float:
-    if salary is not int or level is not int:
+    if salary is None or level is None or perf_level is None:
+        raise NullAgrumentException("Один из входных параметров не определён")
+    if not isinstance(salary, int) or not isinstance(level, int):
         raise TypeError("Введены данные некорректного формата")
-    if salary < 70000 or 750000 < level:
+    if salary < 70000 or 750000 < salary:
         raise ValueError("Зарплата не соответствует диапазону")
     if level < 7 or 15 < level:
         raise ValueError("Недопустимый уровень инженера")
     if perf_level < 1 or 5 < perf_level:
         raise ValueError("Неверное значение Performance Review")
-    if salary is None or level is None or perf_level is None:
-        raise NullAgrumentException("Один из входных параметров не определён")
     level_modifier = calc_level_modifier(level)
     perf_modifier = calc_performance_modifier(perf_level)
 
@@ -67,5 +66,4 @@ def calc_bonus(salary: int, level: int, perf_level: decimal) -> float:
 
 
 class NullAgrumentException(Exception):
-    def __init__(self, message):
-        self.message = message
+    pass
