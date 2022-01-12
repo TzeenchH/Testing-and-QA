@@ -53,16 +53,16 @@ min_result = 0
 max_result = 300000
 
 
-# @pytest.mark.parametrize(["salary", "level", "perf_level"], [values for values in
-#                                                              AllPairs([preset_salary_borders,
-#                                                                        preset_level_borders,
-#                                                                        preset_perf_level_borders])])
-# def test_calc_bonus_borders(salary, level, perf_level):
-#     try:
-#         with pytest.raises(ValueError) as exc:
-#             result = main.calc_bonus(salary=salary, level=level, perf_level=perf_level)
-#         assert str(exc.value) in ["Зарплата не соответствует диапазону",
-#                                   "Недопустимый уровень инженера",
-#                                   "Неверное значение Performance Review"]
-#     except _pytest.outcomes.Failed:
-#         assert min_result < result < max_result
+@pytest.mark.parametrize(["salary", "level", "perf_level"], [values for values in
+                                                             AllPairs([preset_salary_borders,
+                                                                       preset_level_borders,
+                                                                       preset_perf_level_borders])])
+def test_calc_bonus_borders(salary, level, perf_level):
+    try:
+        with pytest.raises(ValueError) as exc:
+            result = main.calc_bonus(salary=salary, level=level, perf_level=perf_level)
+        assert str(exc.value) in ["Зарплата не соответствует диапазону",
+                                  "Недопустимый уровень инженера",
+                                  "Неверное значение Performance Review"]
+    except _pytest.outcomes.Failed:
+        assert min_result < result < max_result
